@@ -43,6 +43,7 @@ Vagrant.configure("2") do |config|
   MACHINES.each do |boxname, boxconfig|
 
       config.vm.define boxname do |box|
+      config.vm.synced_folder ".", "/vagrant", disabled: true
 
           box.vm.box = boxconfig[:box_name]
           box.vm.host_name = boxname.to_s
