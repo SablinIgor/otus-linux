@@ -1,0 +1,12 @@
+web:
+    image: soaron/phpfarm-nginx:0.1
+    ports:
+        - "8080:80"
+    volumes:
+        - ./code:/code
+    links:
+        - php
+php:
+    image: soaron/custom-phpfarm:0.6
+    volumes:
+        - ./code:/code
