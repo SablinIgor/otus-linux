@@ -1,0 +1,210 @@
+Script started on Fri 06 Dec 2019 03:07:06 PM EST
+]0;root@sandbox:/home/admin/otus-linux/HW10-ansible/roles/my-nginx[?1034h[root@sandbox my-nginx]# molecule test
+--> [36mValidating schema /home/admin/otus-linux/HW10-ansible/roles/my-nginx/molecule/default/molecule.yml.[0m
+[32mValidation completed successfully.[0m
+--> [36mTest matrix[0m
+    
+└── default
+    ├── lint
+    ├── dependency
+    ├── cleanup
+    ├── destroy
+    ├── syntax
+    ├── create
+    ├── prepare
+    ├── converge
+    ├── idempotence
+    ├── side_effect
+    ├── verify
+    ├── cleanup
+    └── destroy
+    
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'lint'[0m
+--> [36mExecuting Yamllint on files found in /home/admin/otus-linux/HW10-ansible/roles/my-nginx/...[0m
+[32mLint completed successfully.[0m
+--> [36mExecuting Yamllint on files found in /home/admin/otus-linux/HW10-ansible/roles/my-nginx/molecule/default/tests/...[0m
+[32mLint completed successfully.[0m
+--> [36mExecuting Ansible Lint on /home/admin/otus-linux/HW10-ansible/roles/my-nginx/molecule/default/playbook.yml...[0m
+[32mLint completed successfully.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'dependency'[0m
+[33mSkipping, missing the requirements file.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'cleanup'[0m
+[33mSkipping, cleanup playbook not configured.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'destroy'[0m
+--> [36mSanity checks: 'docker'[0m
+    
+    PLAY [Destroy] *****************************************************************
+    
+    TASK [Destroy molecule instance(s)] ********************************************
+    [0;33mchanged: [localhost] => (item=instance)[0m
+    
+    TASK [Wait for instance(s) deletion to complete] *******************************
+    [0;32mok: [localhost] => (item=None)[0m
+    [0;32mok: [localhost][0m
+    
+    TASK [Delete docker network(s)] ************************************************
+    
+    PLAY RECAP *********************************************************************
+    [0;33mlocalhost[0m                  : [0;32mok=2   [0m [0;33mchanged=1   [0m unreachable=0    failed=0
+    
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'syntax'[0m
+--> [36mSanity checks: 'docker'[0m
+    
+    playbook: /home/admin/otus-linux/HW10-ansible/roles/my-nginx/molecule/default/playbook.yml
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'create'[0m
+    
+    PLAY [Create] ******************************************************************
+    
+    TASK [Log into a Docker registry] **********************************************
+    [0;36mskipping: [localhost] => (item=None) [0m
+    
+    TASK [Create Dockerfiles from image names] *************************************
+    [0;33mchanged: [localhost] => (item=None)[0m
+    [0;33mchanged: [localhost][0m
+    
+    TASK [Determine which docker image info module to use] *************************
+    [0;32mok: [localhost][0m
+    
+    TASK [Discover local Docker images] ********************************************
+    [0;32mok: [localhost] => (item=None)[0m
+    [0;32mok: [localhost][0m
+    
+    TASK [Build an Ansible compatible image (new)] *********************************
+    [0;36mskipping: [localhost] => (item=molecule_local/centos:7) [0m
+    
+    TASK [Build an Ansible compatible image (old)] *********************************
+    [0;33mchanged: [localhost] => (item=molecule_local/centos:7)[0m
+    
+    TASK [Create docker network(s)] ************************************************
+    
+    TASK [Determine the CMD directives] ********************************************
+    [0;32mok: [localhost] => (item=None)[0m
+    [0;32mok: [localhost][0m
+    
+    TASK [Create molecule instance(s)] *********************************************
+    [0;33mchanged: [localhost] => (item=instance)[0m
+    
+    TASK [Wait for instance(s) creation to complete] *******************************
+    [1;30mFAILED - RETRYING: Wait for instance(s) creation to complete (300 retries left).[0m
+    [0;33mchanged: [localhost] => (item=None)[0m
+    [0;33mchanged: [localhost][0m
+    
+    PLAY RECAP *********************************************************************
+    [0;33mlocalhost[0m                  : [0;32mok=7   [0m [0;33mchanged=4   [0m unreachable=0    failed=0
+    
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'prepare'[0m
+[33mSkipping, prepare playbook not configured.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'converge'[0m
+    
+    PLAY [Converge] ****************************************************************
+    
+    TASK [Gathering Facts] *********************************************************
+    [0;32mok: [instance][0m
+    
+    TASK [my-nginx : NGINX | Install EPEL Repo package from standart repo] *********
+    [0;33mchanged: [instance][0m
+    
+    TASK [my-nginx : NGINX | Install NGINX package from EPEL Repo] *****************
+    [0;33mchanged: [instance][0m
+    
+    TASK [my-nginx : NGINX | Create NGINX config file from template] ***************
+    [0;33mchanged: [instance][0m
+    
+    RUNNING HANDLER [my-nginx : restart nginx] *************************************
+    [0;33mchanged: [instance][0m
+    
+    RUNNING HANDLER [my-nginx : reload nginx] **************************************
+    [0;33mchanged: [instance][0m
+    
+    PLAY RECAP *********************************************************************
+    [0;33minstance[0m                   : [0;32mok=6   [0m [0;33mchanged=5   [0m unreachable=0    failed=0
+    
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'idempotence'[0m
+[32mIdempotence completed successfully.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'side_effect'[0m
+[33mSkipping, side effect playbook not configured.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'verify'[0m
+--> [36mExecuting Goss tests found in /home/admin/otus-linux/HW10-ansible/roles/my-nginx/molecule/default/tests/...[0m
+    
+    PLAY [Verify] ******************************************************************
+    
+    TASK [Gathering Facts] *********************************************************
+    [0;32mok: [instance][0m
+    
+    TASK [Download and install Goss] ***********************************************
+    [0;33mchanged: [instance][0m
+    
+    TASK [Create Molecule directory for test files] ********************************
+    [0;33mchanged: [instance][0m
+    
+    TASK [Find Goss tests on localhost] ********************************************
+    [0;32mok: [instance -> localhost][0m
+    
+    TASK [debug] *******************************************************************
+    [0;36mskipping: [instance][0m
+    
+    TASK [Copy Goss tests to remote] ***********************************************
+    [0;33mchanged: [instance] => (item={u'rusr': True, u'uid': 0, u'rgrp': True, u'xoth': False, u'islnk': False, u'woth': False, u'nlink': 1, u'issock': False, u'mtime': 1575661919.048292, u'gr_name': u'root', u'path': u'/home/admin/otus-linux/HW10-ansible/roles/my-nginx/molecule/default/tests/test_default.yml', u'xusr': False, u'atime': 1575661971.1777985, u'inode': 287648844, u'isgid': False, u'size': 97, u'isdir': False, u'ctime': 1575661919.1792908, u'roth': True, u'isblk': False, u'xgrp': False, u'isuid': False, u'dev': 64770, u'wgrp': False, u'isreg': True, u'isfifo': False, u'mode': u'0644', u'pw_name': u'root', u'gid': 0, u'ischr': False, u'wusr': True})[0m
+    
+    TASK [Register test files] *****************************************************
+    [0;33mchanged: [instance][0m
+    
+    TASK [Execute Goss tests] ******************************************************
+    [0;33mchanged: [instance] => (item=/tmp/molecule/goss/test_default.yml)[0m
+    
+    TASK [Display details about the Goss results] **********************************
+    [0;32mok: [instance] => (item={'_ansible_parsed': True, 'stderr_lines': [], u'changed': True, u'stdout': u'Service: nginx: enabled: matches expectation: [true]\nService: nginx: running: matches expectation: [true]\nPackage: nginx: installed: matches expectation: [true]\n\n\nTotal Duration: 0.041s\nCount: 3, Failed: 0, Skipped: 0', '_ansible_item_result': True, u'delta': u'0:00:00.766308', 'stdout_lines': [u'Service: nginx: enabled: matches expectation: [true]', u'Service: nginx: running: matches expectation: [true]', u'Package: nginx: installed: matches expectation: [true]', u'', u'', u'Total Duration: 0.041s', u'Count: 3, Failed: 0, Skipped: 0'], 'failed_when_result': False, '_ansible_item_label': u'/tmp/molecule/goss/test_default.yml', u'end': u'2019-12-06 20:11:49.203836', '_ansible_no_log': False, 'failed': False, u'cmd': [u'/usr/local/bin/goss', u'-g', u'/tmp/molecule/goss/test_default.yml', u'validate', u'--format', u'documentation'], 'item': u'/tmp/molecule/goss/test_default.yml', u'stderr': u'', u'rc': 0, u'invocation': {u'module_args': {u'warn': True, u'executable': None, u'_uses_shell': False, u'_raw_params': u'/usr/local/bin/goss -g /tmp/molecule/goss/test_default.yml validate --format documentation', u'removes': None, u'argv': None, u'creates': None, u'chdir': None, u'stdin': None}}, u'start': u'2019-12-06 20:11:48.437528', '_ansible_ignore_errors': None}) => {[0m
+    [0;32m    "msg": [[0m
+    [0;32m        "Service: nginx: enabled: matches expectation: [true]", [0m
+    [0;32m        "Service: nginx: running: matches expectation: [true]", [0m
+    [0;32m        "Package: nginx: installed: matches expectation: [true]", [0m
+    [0;32m        "", [0m
+    [0;32m        "", [0m
+    [0;32m        "Total Duration: 0.041s", [0m
+    [0;32m        "Count: 3, Failed: 0, Skipped: 0"[0m
+    [0;32m    ][0m
+    [0;32m}[0m
+    
+    TASK [Fail when tests fail] ****************************************************
+    [0;36mskipping: [instance] => (item={'_ansible_parsed': True, 'stderr_lines': [], u'changed': True, u'stdout': u'Service: nginx: enabled: matches expectation: [true]\nService: nginx: running: matches expectation: [true]\nPackage: nginx: installed: matches expectation: [true]\n\n\nTotal Duration: 0.041s\nCount: 3, Failed: 0, Skipped: 0', '_ansible_item_result': True, u'delta': u'0:00:00.766308', 'stdout_lines': [u'Service: nginx: enabled: matches expectation: [true]', u'Service: nginx: running: matches expectation: [true]', u'Package: nginx: installed: matches expectation: [true]', u'', u'', u'Total Duration: 0.041s', u'Count: 3, Failed: 0, Skipped: 0'], 'failed_when_result': False, '_ansible_item_label': u'/tmp/molecule/goss/test_default.yml', u'end': u'2019-12-06 20:11:49.203836', '_ansible_no_log': False, 'failed': False, u'cmd': [u'/usr/local/bin/goss', u'-g', u'/tmp/molecule/goss/test_default.yml', u'validate', u'--format', u'documentation'], 'item': u'/tmp/molecule/goss/test_default.yml', u'stderr': u'', u'rc': 0, u'invocation': {u'module_args': {u'warn': True, u'executable': None, u'_uses_shell': False, u'_raw_params': u'/usr/local/bin/goss -g /tmp/molecule/goss/test_default.yml validate --format documentation', u'removes': None, u'argv': None, u'creates': None, u'chdir': None, u'stdin': None}}, u'start': u'2019-12-06 20:11:48.437528', '_ansible_ignore_errors': None}) [0m
+    
+    PLAY RECAP *********************************************************************
+    [0;33minstance[0m                   : [0;32mok=8   [0m [0;33mchanged=5   [0m unreachable=0    failed=0
+    
+[32mVerifier completed successfully.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'cleanup'[0m
+[33mSkipping, cleanup playbook not configured.[0m
+--> [36mScenario: 'default'[0m
+--> [36mAction: 'destroy'[0m
+    
+    PLAY [Destroy] *****************************************************************
+    
+    TASK [Destroy molecule instance(s)] ********************************************
+    [0;33mchanged: [localhost] => (item=instance)[0m
+    
+    TASK [Wait for instance(s) deletion to complete] *******************************
+    [1;30mFAILED - RETRYING: Wait for instance(s) deletion to complete (300 retries left).[0m
+    [0;33mchanged: [localhost] => (item=None)[0m
+    [0;33mchanged: [localhost][0m
+    
+    TASK [Delete docker network(s)] ************************************************
+    
+    PLAY RECAP *********************************************************************
+    [0;33mlocalhost[0m                  : [0;32mok=2   [0m [0;33mchanged=2   [0m unreachable=0    failed=0
+    
+--> [36mPruning extra files from scenario ephemeral directory[0m
+[0m]0;root@sandbox:/home/admin/otus-linux/HW10-ansible/roles/my-nginx[root@sandbox my-nginx]# exit
+
+Script done on Fri 06 Dec 2019 03:12:36 PM EST
