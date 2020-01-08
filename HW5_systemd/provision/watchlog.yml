@@ -1,0 +1,42 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: true
+
+  tasks:
+    - name: Copy watchlog to /etc/sysconfig
+      copy:
+        src: files/watchlog
+        dest: /etc/sysconfig/watchlog
+        remote_src: yes
+
+    - name: Copy watchlog.sh
+      copy:
+        src: files/watchlog.sh
+        dest: /opt/watchlog.sh
+        owner: root
+        mode: '0744'
+        remote_src: yes
+
+    - name: Copy watchlog.log
+      copy:
+        src: files/watchlog.log
+        dest: /var/log/watchlog.log
+        remote_src: yes
+
+    - name: Copy service unit
+      copy:
+        src: files/watchlog.service
+        dest: /etc/systemd/system/watchlog.service
+        remote_src: yes
+
+    - name: Copy timer unit
+      copy:
+        src: files/watchlog.timer
+        dest: /etc/systemd/system/watchlog.timer
+        remote_src: yes
+
+    - name: Run timer
+      service:
+        name: watchlog.timer
+        state: started

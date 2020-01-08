@@ -1,0 +1,92 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: true
+
+  tasks:
+    - name: Add epel
+      yum:
+        name: epel-release
+        state: latest
+
+    - name: Install additional packages
+      yum: 
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - spawn-fcgi
+        - php
+        - php-cli
+        - mod_fcgid
+        - httpd
+        - libselinux-python
+        - policycoreutils-python
+
+    - name: Copy spawn-fcgi
+      copy:
+        src: files/spawn-fcgi
+        dest: /etc/sysconfig/spawn-fcgi
+        remote_src: yes
+
+    - name: Copy spawn-fcgi.service
+      copy:
+        src: files/spawn-fcgi.service
+        dest: /etc/systemd/system/spawn-fcgi.service
+        remote_src: yes
+
+    - name: Run spawn-fcgi
+      service:
+        name: spawn-fcgi
+        state: started
+
+    - name: Copy httpd@.service
+      copy:
+        src: files/httpd@.service
+        dest: /usr/lib/systemd/system/httpd@.service
+        remote_src: yes
+
+    - name: Delete old one
+      file:
+        path: /usr/lib/systemd/system/httpd.service
+        state: absent
+
+    - name: Copy httpd-first
+      copy:
+        src: files/httpd-first
+        dest: /etc/sysconfig/httpd-first
+        remote_src: yes
+
+    - name: Copy httpd-second
+      copy:
+        src: files/httpd-second
+        dest: /etc/sysconfig/httpd-second
+        remote_src: yes
+
+    - name: Copy first.conf
+      copy:
+        src: files/first.conf
+        dest: /etc/httpd/conf/first.conf 
+        remote_src: yes
+
+    - name: Copy second.conf
+      copy:
+        src: files/second.conf
+        dest: /etc/httpd/conf/second.conf 
+        remote_src: yes
+
+    - name: Allow Apache to listen on tcp port 8888
+      seport:
+        ports: 8090
+        proto: tcp
+        setype: http_port_t
+        state: present
+
+    - name: Run httpd@first
+      service:
+        name: httpd@first
+        state: started
+
+    - name: Run httpd@second
+      service:
+        name: httpd@second
+        state: started
