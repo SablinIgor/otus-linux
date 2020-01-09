@@ -30,4 +30,8 @@ https://docs.influxdata.com/telegraf/v1.13/administration/configuration/
 https://docs.influxdata.com/chronograf/v1.7/introduction/installation/#download-and-install
 https://portal.influxdata.com/downloads/
 
+Компонент для alert-инга Kapacitor
+
+Не ставился.
+
 Результат настройки: https://pasteboard.co/IP8sOpg.png
