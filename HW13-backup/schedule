@@ -1,0 +1,5 @@
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+BORG_PASSPHRASE="myrepo"
+
+# MyRemoteHost
+*/5 * * * * /vagrant/borg_backup_files.sh

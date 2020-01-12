@@ -1,0 +1,55 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$commonscript = <<-SCRIPT
+sudo yum update -y
+sudo yum install wget -y
+sudo echo "192.168.111.10   server.example.com server" >> /etc/hosts
+sudo echo "192.168.111.11   client.example.com client" >> /etc/hosts
+sudo yum install wget -y
+sudo wget https://github.com/borgbackup/borg/releases/download/1.1.10/borg-linux64 -O /usr/bin/borg
+sudo chmod +x /usr/bin/borg
+SCRIPT
+
+$serverscript = <<-SCRIPT
+sudo useradd -m borg
+sudo mkdir ~borg/.ssh
+echo 'command="/usr/bin/borg serve " ' >> ~borg/.ssh/authorized_keys
+cat /vagrant/keys/otuslab.pub >> ~borg/.ssh/authorized_keys
+chown -R borg:borg ~borg/.ssh
+SCRIPT
+
+$clientscript = <<-SCRIPT
+sudo su -l
+mkdir /root/.ssh
+cp -r /vagrant/keys/otuslab /root/.ssh/id_rsa
+chmod 400  /root/.ssh/id_rsa
+cat > /root/.ssh/config <<EOF 
+Host *
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null 
+EOF
+export BORG_PASSPHRASE="myrepo"
+borg init -e repokey borg@server:MyBorgRepo
+cat /vagrant/schedule | crontab -
+SCRIPT
+
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.box_check_update = true
+
+  config.vm.provision "shell", inline: $commonscript
+
+  config.vm.define "server", primary: true do |s|
+    s.vm.hostname = 'server'
+    s.vm.network "private_network", ip: "192.168.111.10"
+    s.vm.provision "shell", inline: $serverscript
+  end
+
+  config.vm.define "client" do |c|
+    c.vm.hostname = 'client'
+    c.vm.network "private_network", ip: "192.168.111.11"
+    c.vm.provision "shell", inline: $clientscript
+  end
+end
