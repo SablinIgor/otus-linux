@@ -1,0 +1,76 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+home = ENV['HOME']
+ENV["LC_ALL"] = "en_US.UTF-8"
+
+$logscript = <<-SCRIPT
+cat > /etc/yum.repos.d/elastic-7.x.repo <<EOF 
+[elasticsearch-7.x]
+name=Elastic repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+EOF
+
+auditctl -a exit,always -F path=/etc/nginx/nginx.conf -F perm=wa
+auditctl -a exclude,always -F msgtype=SYSCALL
+
+yum install filebeat -y
+
+filebeat modules enable nginx
+filebeat modules enable auditd
+
+cp /vagrant/provisioning/filebeat.yml /etc/filebeat/
+
+systemctl enable filebeat
+systemctl start filebeat
+
+cp /vagrant/provisioning/rsyslog-client.conf /etc/rsyslog.conf
+systemctl restart rsyslog
+SCRIPT
+
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "centos/7"
+
+    config.vm.define "elk" do |elk|
+      elk.vm.hostname = "elk"
+      elk.vm.network "private_network", ip: "192.168.11.102"
+      elk.vm.network "forwarded_port", guest: 5601, host: 5601
+      elk.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "4096"]
+      end
+
+      elk.vm.provision "ansible_local" do |ansible|
+        ansible.galaxy_role_file = "provisioning/requirements.yml"
+        ansible.playbook = "provisioning/elk.yml"
+        ansible.verbose = true
+      end
+    end
+
+    config.vm.define "rsys" do |rsys|
+      rsys.vm.hostname = "rsys"
+      rsys.vm.network "private_network", ip: "192.168.11.103"
+
+      rsys.vm.provision "shell", inline: <<-SHELL
+        cp /vagrant/provisioning/rsyslog-server.conf /etc/rsyslog.conf
+        systemctl restart rsyslog
+      SHELL
+    end
+
+    config.vm.define "web" do |web|
+      web.vm.hostname = "web"
+      web.vm.network "private_network", ip: "192.168.11.101"
+      web.vm.network "forwarded_port", guest: 80, host: 8889
+
+      web.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "provisioning/nginx.yml"
+        ansible.verbose = true
+      end
+
+      web.vm.provision "shell", inline: $logscript     
+    end
+end

@@ -1,0 +1,7 @@
+#- src: elastic.elasticsearch
+# from galaxy
+- src: geerlingguy.filebeat
+- src: geerlingguy.java
+- src: geerlingguy.elasticsearch
+- src: geerlingguy.logstash
+- src: geerlingguy.kibana

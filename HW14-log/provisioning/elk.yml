@@ -1,0 +1,12 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: true
+  vars:
+    es_version: 7.5.1
+
+  roles:
+    - role: geerlingguy.java
+    - role: geerlingguy.elasticsearch
+    - role: geerlingguy.logstash
+    - role: geerlingguy.kibana
