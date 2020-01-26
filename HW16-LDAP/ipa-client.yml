@@ -1,0 +1,23 @@
+---
+- hosts: all
+  gather_facts: no
+  become: true
+
+  tasks:
+    - name: Install package
+      yum:
+        name: freeipa-client
+        state: present
+
+    - name: Setup IPA client
+      command:  >
+        ipa-client-install
+        --mkhomedir
+        --server=ipa-server.devlab.local
+        --realm=DEVLAB.LOCAL
+        --domain=devlab.local
+        --hostname="{{ inventory_hostname }}"
+        --principal=admin
+        --password=password
+        --quiet
+        --unattended
