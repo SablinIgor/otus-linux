@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+home = ENV['HOME']
+ENV["LC_ALL"] = "en_US.UTF-8"
+
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "centos/7"
+
+    config.vm.define "server" do |server|
+      server.vm.hostname = "server"
+      server.vm.network "private_network", ip: "192.168.11.102"
+
+      server.vm.provision "shell", inline: <<-SHELL
+        sudo su -l
+        systemctl start firewalld
+        yum install nfs-utils -y
+        systemctl enable rpcbind nfs-server
+        systemctl start rpcbind nfs-server
+        mkdir -p /var/nfs
+        chmod -R a+r /var/nfs
+        mkdir -p /var/nfs/upload
+        chmod -R a+w /var/nfs/upload
+        echo "/var/nfs 192.168.11.0/24(rw,sync,all_squash)" > /etc/exports
+        exportfs -r
+        firewall-cmd --permanent --zone=public --add-service=nfs
+        firewall-cmd --permanent --zone=public --add-service=nfs3
+        firewall-cmd --permanent --zone=public --add-service=mountd
+        firewall-cmd --permanent --zone=public --add-service=rpc-bind
+        firewall-cmd --reload
+      SHELL
+    end
+
+    config.vm.define "client" do |client|
+      client.vm.hostname = "client"
+      client.vm.network "private_network", ip: "192.168.11.103"
+
+      client.vm.provision "shell", inline: <<-SHELL
+        yum install nfs-utils -y
+        systemctl start rpcbind
+        systemctl enable rpcbind
+        mkdir /mnt/nfs-share
+        echo "##### NFS MOUNT #####" >> /etc/fstab
+        echo "192.168.11.102:/var/nfs/    /mnt/nfs-share/ nfs auto,nofail,vers=3,udp  0 0" >> /etc/fstab
+        mount -a
+      SHELL
+    end
+end
